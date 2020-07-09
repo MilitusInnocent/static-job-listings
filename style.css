@@ -1,2 +1,123 @@
-.attribution { font-size: 11px; text-align: center; }
-.attribution a { color: hsl(228, 45%, 44%); }
+/* ----------------
+- FONT 
+- VARIABLE 
+- GLOBAL 
+- HEADER
+- JOB-BOARD 
+- BOARD 
+- BOARD Logo 
+- BOARD Name 
+- BOARD Position 
+- BOARD Detail
+- BOARD Tag 
+- ATTRIBUTION 
+----------------- */
+
+/* -- FONT -- */
+
+@import url('https://fonts.googleapis.com/css2?family=Spartan:wght@500;700&display=swap');
+
+/* -- VARIABLE -- */
+
+:root {
+--white: #fff;
+--desaturated_dark_cyan: hsl(180, 29%, 50%);
+--light_grayish_cyan: hsl(180, 52%, 96%);
+--light_grayish_cyan: hsl(180, 31%, 95%);
+--dark_grayish_cyan: hsl(180, 8%, 52%);
+--very_dark_grayish_cyan: hsl(180, 14%, 20%);
+}
+
+/* -- GLOBAL -- */
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 15px;
+  font-family: 'Spartan', sans-serif;
+  font-weight: 500;
+}
+
+body {
+  min-width: 375px;
+  max-width: 1440px;
+  width: 100%;
+
+  display: grid;
+  place-items: center;
+}
+
+.container {}
+
+/* -- HEADER -- */
+
+.header {}
+
+/* -- JOB-BOARD -- */
+
+.job-board {}
+
+/* -- BOARD -- */
+
+.board {}
+
+/* -- BOARD Logo -- */
+
+.board__company-logo {}
+.board__company-logo img {}
+
+/* -- BOARD Name -- */
+
+.board__company-name  {}
+.board__company-name p {}
+.board__new-tag {}
+.board__featured-tag {}
+
+/* -- BOARD Position -- */
+
+.board__job-position {}
+.board__job-position h1 {}
+
+.board__job-position h1:focus, 
+.board__job-position h1:hover {}
+
+/* -- BOARD Detail -- */
+
+.board__job-detail {}
+.board__job-detail ul {}
+.board__job-detail li {}
+
+/* -- BOARD Tag -- */
+
+.board__tag {} 
+.tag {}
+
+.tag:focus,
+.tag:hover {}
+
+/* -- ATTRIBUTION -- */
+
+.attribution {
+  font-size: .8rem;
+  text-align: center;
+  color: var(--very_dark_grayish_cyan);
+}
+
+.attribution a {
+  color: var(--desaturated_dark_cyan);
+}
+
+/* -- MEDIA QUERIES - GLOBAL -- */
+/* -- MEDIA QUERIES - HEADER -- */
+/* -- MEDIA QUERIES - JOB-BOARD -- */
+/* -- MEDIA QUERIES - BOARD -- */
+/* -- MEDIA QUERIES - BOARD Logo -- */
+/* -- MEDIA QUERIES - BOARD Name -- */
+/* -- MEDIA QUERIES - BOARD Position -- */
+/* -- MEDIA QUERIES - BOARD Detail -- */
+/* -- MEDIA QUERIES - BOARD Tag -- */
+/* -- MEDIA QUERIES - ATTRIBUTION -- */
