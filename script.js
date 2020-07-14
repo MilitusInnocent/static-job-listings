@@ -1,126 +1,301 @@
-const jobBoard = document.getElementById('job-board')
+const TAG_ACTIVE_CLASS = 'tag--active';
+const SEARCH_HIDDEN_CLASS = 'search--hidden';
+const CLOSE_TAG_CLASS = 'close-tag';
+const TAG_CLASS = 'tag';
 
-// --- JSON request -- //
-
-const requestURL = 'data.json'
-const request = new XMLHttpRequest();
-request.open('GET', requestURL);
-request.send();
-
-request.onload = function() {
-  const jobDataContent = request.response;
-  const jobData = JSON.parse(jobDataContent)
-  appendJobs(jobData);
-} 
-
-// --- Append Job function -- //
-
-function appendJobs(jsonObj) {
-  for (let i in jsonObj) {
-
-    // --- Job section container --- //
-
-    const section = document.createElement('section');
-    section.className = 'board';
-
-    // --- Company image --- //
-
-    const imageContainer = document.createElement('div');
-    imageContainer.className = 'board__company-logo';
-
-    const logo = document.createElement('img');
-    logo.src = jsonObj[i].logo;
-    imageContainer.appendChild(logo);
-
-    // --- Company information --- //
-
-    const companyContainer = document.createElement('div');
-    companyContainer.className = 'board__company-name';
-
-    const companyName = document.createElement('p');
-    companyName.innerText = jsonObj[i].company;
-    companyContainer.appendChild(companyName);
-
-    const newOfferTag = document.createElement('span');
-    jsonObj[i].new ? newOfferTag.innerText = 'NEW!' : null;
-    companyContainer.appendChild(newOfferTag);
-
-    const featuredTag = document.createElement('span');
-    jsonObj[i].featured ? featuredTag.innerText = 'FEATURED' : null;
-    companyContainer.appendChild(featuredTag);
-
-    // --- Job position information --- // 
-
-    const jobPositionContainer = document.createElement('div');
-    jobPositionContainer.className = 'board__job-position';
-
-    const jobPosition = document.createElement('h1');
-    jobPosition.innerText = jsonObj[i].position;
-    jobPositionContainer.appendChild(jobPosition);
-
-    // --- Job details information --- //
-
-    const jobDetailContainer = document.createElement('div');
-    jobDetailContainer.className = 'board__job-detail';
-
-    const jobDetail = document.createElement('ul');
-    jobDetailContainer.appendChild(jobDetail);
-
-    const postedAt = document.createElement('li');
-    postedAt.innerText = jsonObj[i].postedAt;
-    jobDetail.appendChild(postedAt);
-
-    const contract = document.createElement('li');
-    contract.innerText = jsonObj[i].contract;
-    jobDetail.appendChild(contract);
-
-    const location = document.createElement('li');
-    location.innerText = jsonObj[i].location;
-    jobDetail.appendChild(location);
-
-    // --- Tag section --- //
-
-    const tagContainer = document.createElement('div');
-    tagContainer.className = 'board__tag';
-
-    const role = document.createElement('span');
-    role.innerText = jsonObj[i].role;
-    role.className = 'tag';
-    role.setAttribute('data-role', jsonObj[i].role.toLowerCase());
-    tagContainer.appendChild(role);
-
-    const level = document.createElement('span');
-    level.innerText = jsonObj[i].level;
-    level.className = 'tag';
-    level.setAttribute('data-level', jsonObj[i].level.toLowerCase());
-    tagContainer.appendChild(level);
-
-    for (let language in jsonObj[i].languages) {
-      const languages = document.createElement('span');
-      languages.innerText = jsonObj[i].languages[language];
-      languages.className = 'tag';
-      languages.setAttribute('data-languages', jsonObj[i].languages[language].toLowerCase());
-      tagContainer.appendChild(languages);
-    }
-
-    for (let tool in jsonObj[i].tools) {
-      const tools = document.createElement('span');
-      tools.innerText = jsonObj[i].tools[tool];
-      tools.className = 'tag';
-      tools.setAttribute('data-tools', jsonObj[i].tools[tool].toLowerCase());
-      tagContainer.appendChild(tools);
-    }
-
-    // --- Append elements to section container --- //
-
-    section.appendChild(imageContainer);
-    section.appendChild(companyContainer);
-    section.appendChild(jobPositionContainer);
-    section.appendChild(jobDetailContainer);
-    section.appendChild(tagContainer);
-
-    // --- Append sections to body --- //
-
-    jobBoard.appendChild(section);    
+const jobsListings = [
+  {
+    "id": 1,
+    "company": "Photosnap",
+    "logo": "./images/photosnap.svg",
+    "new": true,
+    "featured": true,
+    "position": "Senior Frontend Developer",
+    "role": "Frontend",
+    "level": "Senior",
+    "postedAt": "1d ago",
+    "contract": "Full Time",
+    "location": "USA Only",
+    "languages": ["HTML", "CSS", "JavaScript"]
+  },
+  {
+    "id": 2,
+    "company": "Manage",
+    "logo": "./images/manage.svg",
+    "new": true,
+    "featured": true,
+    "position": "Fullstack Developer",
+    "role": "Fullstack",
+    "level": "Midweight",
+    "postedAt": "1d ago",
+    "contract": "Part Time",
+    "location": "Remote",
+    "languages": ["Python"],
+    "tools": ["React"]
+  },
+  {
+    "id": 3,
+    "company": "Account",
+    "logo": "./images/account.svg",
+    "new": true,
+    "featured": false,
+    "position": "Junior Frontend Developer",
+    "role": "Frontend",
+    "level": "Junior",
+    "postedAt": "2d ago",
+    "contract": "Part Time",
+    "location": "USA Only",
+    "languages": ["JavaScript"],
+    "tools": ["React", "Sass"]
+  },
+  {
+    "id": 4,
+    "company": "MyHome",
+    "logo": "./images/myhome.svg",
+    "new": false,
+    "featured": false,
+    "position": "Junior Frontend Developer",
+    "role": "Frontend",
+    "level": "Junior",
+    "postedAt": "5d ago",
+    "contract": "Contract",
+    "location": "USA Only",
+    "languages": ["CSS", "JavaScript"]
+  },
+  {
+    "id": 5,
+    "company": "Loop Studios",
+    "logo": "./images/loop-studios.svg",
+    "new": false,
+    "featured": false,
+    "position": "Software Engineer",
+    "role": "FullStack",
+    "level": "Midweight",
+    "postedAt": "1w ago",
+    "contract": "Full Time",
+    "location": "Worldwide",
+    "languages": ["JavaScript"],
+    "tools": ["Ruby", "Sass"]
+  },
+  {
+    "id": 6,
+    "company": "FaceIt",
+    "logo": "./images/faceit.svg",
+    "new": false,
+    "featured": false,
+    "position": "Junior Backend Developer",
+    "role": "Backend",
+    "level": "Junior",
+    "postedAt": "2w ago",
+    "contract": "Full Time",
+    "location": "UK Only",
+    "tools": ["RoR"]
+  },
+  {
+    "id": 7,
+    "company": "Shortly",
+    "logo": "./images/shortly.svg",
+    "new": false,
+    "featured": false,
+    "position": "Junior Developer",
+    "role": "Frontend",
+    "level": "Junior",
+    "postedAt": "2w ago",
+    "contract": "Full Time",
+    "location": "Worldwide",
+    "languages": ["HTML", "JavaScript"],
+    "tools": ["Sass"]
+  },
+  {
+    "id": 8,
+    "company": "Insure",
+    "logo": "./images/insure.svg",
+    "new": false,
+    "featured": false,
+    "position": "Junior Frontend Developer",
+    "role": "Frontend",
+    "level": "Junior",
+    "postedAt": "2w ago",
+    "contract": "Full Time",
+    "location": "USA Only",
+    "languages": ["JavaScript"],
+    "tools": ["Vue, Sass"]
+  },
+  {
+    "id": 9,
+    "company": "Eyecam Co.",
+    "logo": "./images/eyecam-co.svg",
+    "new": false,
+    "featured": false,
+    "position": "Full Stack Engineer",
+    "role": "Fullstack",
+    "level": "Midweight",
+    "postedAt": "3w ago",
+    "contract": "Full Time",
+    "location": "Worldwide",
+    "languages": ["JavaScript", "Python"],
+    "tools": ["Django"]
+  },
+  {
+    "id": 10,
+    "company": "The Air Filter Company",
+    "logo": "./images/the-air-filter-company.svg",
+    "new": false,
+    "featured": false,
+    "position": "Front-end Dev",
+    "role": "Frontend",
+    "level": "Junior",
+    "postedAt": "1mo ago",
+    "contract": "Part Time",
+    "location": "Worldwide",
+    "languages": ["JavaScript"],
+    "tools": ["React", "Sass"]
   }
+];
+
+function getTagHTML(tag, tagClasses) {
+    return `<span class="${tagClasses}">${tag}</span>`;
 }
+
+function getJobListingHTML(jobData, filterTags = []) {
+    const JOB_TAGS_PLACEHOLDER = '###JOB_TAGS###';
+    let jobListingHTML = `
+        
+        <section class="job-board">
+
+            <section class="board">
+
+                <div class="board__company-logo">
+                    <img src="${jobData.logo}">
+                </div>
+
+                <div class="board__company-information">
+                    <div class="board__company-name">
+                        <p>${jobData.company}</p>
+                        <span class="board__new-tag">NEW!</span>
+                        <span class="board__featured-tag">FEATURED</span>
+                    </div>
+
+                    <div class="board__job-position">
+                        <h1>${jobData.position}</h1>
+                    </div>
+            
+                    <div class="board__job-detail">
+                        <ul>
+                            <li>${jobData.postedAt}</li>
+                            <span class="li__dot">&#8226</span>
+                            <li>${jobData.contract}</li>
+                            <span class="li__dot">&#8226</span>
+                            <li>${jobData.location}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="board__tag">
+                    ${JOB_TAGS_PLACEHOLDER}
+                </div>
+            </section>
+        </section>
+    `;
+
+    const tagsList = [ jobData.role, jobData.level, ...(jobData.languages || []), ...(jobData.tools || []) ];
+
+    const tagsListLowercase = tagsList.map(t => t && t.toLowerCase());
+    const passesFilter = !filterTags.length || filterTags.every(tag => (
+        tagsListLowercase.includes(tag && tag.toLowerCase())
+    ));
+    
+    if (!passesFilter) {
+        return '';
+    }
+
+    const tagsString = tagsList.reduce((acc, currentTag) => {
+        const activeClass = (filterTags.includes(currentTag) && TAG_ACTIVE_CLASS) || '';
+
+        return acc + getTagHTML(currentTag, `${TAG_CLASS} ${activeClass}`);
+    }, '');
+
+    return jobListingHTML.replace(JOB_TAGS_PLACEHOLDER, tagsString);
+};
+
+function toggleClass(el, className) {
+    if (el.classList.contains(className)) {
+        el.classList.remove(className);
+
+        return;
+    }
+    
+    el.classList.add(className);
+}
+
+function getSearchBarTags(tagValue, searchContentEl) {
+    let searchBarTags = Array.from(searchContentEl.children)
+        .map(node => node.innerHTML && node.innerHTML.trim())
+        .filter(tag => !!tag);
+
+    if (searchBarTags.includes(tagValue)) {
+        searchBarTags = searchBarTags.filter(tag => tag !== tagValue);
+    } else {
+        searchBarTags = [...searchBarTags, tagValue];
+    }
+
+    return searchBarTags;
+}
+
+function setJobsListings(filterTags) {
+    const jobsListingsHTML = jobsListings.reduce((acc, currentListing) => {
+        return acc + getJobListingHTML(currentListing, filterTags);
+    }, '');
+    
+    document.getElementById('jobs').innerHTML = jobsListingsHTML;
+}
+
+function displaySearchWrapper(display = false) {
+    const searchWrapper = document.getElementById('search');
+    
+    if (display) {
+        searchWrapper.classList.remove(SEARCH_HIDDEN_CLASS);
+
+        return;
+    }
+
+    searchWrapper.classList.add(SEARCH_HIDDEN_CLASS);
+}
+
+function setSearchbarContent(searchContentEl, tags) {
+    searchContentEl.innerHTML = tags.reduce((acc, currentTag) => {
+        return acc + getTagHTML(currentTag, CLOSE_TAG_CLASS);
+    }, '');
+}
+
+function resetState(searchContentEl) {
+    searchContentEl.innerHTML = '';
+
+    setJobsListings();
+    displaySearchWrapper(false);
+    toggleClass(targetEl, TAG_ACTIVE_CLASS);
+}
+
+window.addEventListener('click', (event) => {
+    const targetEl = event.target;
+    const targetText = targetEl.innerHTML.trim();
+    const searchContentEl = document.getElementById('search-content');
+    const searchBarTags = getSearchBarTags(targetText, searchContentEl);
+
+    if (targetEl.id === 'clear' || !searchBarTags.length) {
+        resetState(searchContentEl);
+
+        return;
+    }
+
+    if (![TAG_CLASS, CLOSE_TAG_CLASS].some(c => targetEl.classList.contains(c))) {
+        return;
+    }
+
+    setSearchbarContent(searchContentEl, searchBarTags);
+    toggleClass(targetEl, TAG_ACTIVE_CLASS);
+    displaySearchWrapper(searchBarTags.length > 0);
+    setJobsListings(searchBarTags);
+});
+
+setJobsListings();
